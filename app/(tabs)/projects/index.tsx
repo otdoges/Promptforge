@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Gradient } from '@/components/ui/Gradient';
 import { ThemedText } from '@/components/ThemedText';
@@ -13,7 +12,7 @@ import { PROJECTS } from '@/constants/MockData';
 export default function ProjectsScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const [projects, setProjects] = useState(PROJECTS);
+  const [projects] = useState(PROJECTS);
   const [activeFilter, setActiveFilter] = useState<'all' | 'recent' | 'completed'>('all');
 
   const handleCreateNewProject = () => {
@@ -202,13 +201,14 @@ export default function ProjectsScreen() {
               : `Try switching to a different filter`}
           </Text>
           {activeFilter === 'all' && (
-            <Button
-              title="Create Project"
-              onPress={handleCreateNewProject}
-              icon={<IconSymbol name="plus" size={16} color="#FFF" />}
-              variant="primary"
-              style={styles.emptyStateButton}
-            />
+            <View style={styles.emptyStateButton}>
+              <Button
+                title="Create Project"
+                onPress={handleCreateNewProject}
+                icon={<IconSymbol name="plus" size={16} color="#FFF" />}
+                variant="primary"
+              />
+            </View>
           )}
         </View>
       )}
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
   projectsList: {
     padding: 16,
     paddingBottom: 40,
+    flexDirection: 'column',
   },
   projectCard: {
     backgroundColor: 'rgba(0,0,0,0.02)',
