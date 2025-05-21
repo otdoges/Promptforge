@@ -1,6 +1,5 @@
 import { v, ConvexError } from "convex/values";
 import { internalMutation, query, QueryCtx, MutationCtx } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
 
 export async function getUser(
   ctx: QueryCtx | MutationCtx,

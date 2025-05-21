@@ -24,5 +24,5 @@ export default defineSchema({
     lastEdited: v.number(),
     userId: v.string(), // Reference to users table
   }).index("by_user", ["userId"])
-    .index("by_creation_time", ["createdAt"]),
+    .index("byProjectCreationTime", ["createdAt"]),
 });

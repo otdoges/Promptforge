@@ -1,15 +1,13 @@
 import * as React from 'react'
-import { Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native'
+import { Text, TextInput, TouchableOpacity, View, StyleSheet, SafeAreaView } from 'react-native'
 import { useSignUp } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
-import { Colors } from '@/constants/Colors'
-import { useColorScheme } from '@/hooks/useColorScheme'
+import { useThemeColor } from '@/hooks/useThemeColor'
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp()
   const router = useRouter()
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? 'light'];
+  const colors = useThemeColor()
 
   const [emailAddress, setEmailAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -65,93 +63,109 @@ export default function SignUpScreen() {
 
   if (pendingVerification) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={[styles.title, { color: colors.text }]}>Verify your email</Text>
         <TextInput
-          style={[styles.input, { borderColor: colors.divider }]}
           value={code}
           placeholder="Enter your verification code"
-          placeholderTextColor={colors.text + '80'}
-          onChangeText={(code)=> setCode(code)}
+          placeholderTextColor={colors.placeholderText}
+          onChangeText={(code) => setCode(code)}
+          style={[
+            styles.inputField,
+            { 
+              color: colors.text, 
+              backgroundColor: colors.inputBackground,
+            }
+          ]}
         />
-        <TouchableOpacity 
-          style={[styles.button, { backgroundColor: colors.tint }]} 
-          onPress={onVerifyPress}
-        >
-          <Text style={styles.buttonText}>Verify</Text>
+        <TouchableOpacity onPress={onVerifyPress} style={[styles.button, { backgroundColor: colors.accent }]}>
+          <Text style={[styles.buttonText, { color: colors.buttonText }]}>Verify Email</Text>
         </TouchableOpacity>
-      </View>
+      </SafeAreaView>
     )
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={[styles.title, { color: colors.text }]}>Sign up</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={[styles.title, { color: colors.text }]}>Create an account</Text>
       <TextInput
-        style={[styles.input, { borderColor: colors.border }]}
         autoCapitalize="none"
         value={emailAddress}
         placeholder="Enter email"
-        placeholderTextColor={colors.text + '80'}
-        onChangeText={(email)=> setEmailAddress(email)}
+        placeholderTextColor={colors.placeholderText}
+        onChangeText={(email) => setEmailAddress(email)}
+        style={[
+          styles.inputField,
+          { 
+            color: colors.text, 
+            backgroundColor: colors.inputBackground,
+          }
+        ]}
+        keyboardType="email-address"
       />
       <TextInput
-        style={[styles.input, { borderColor: colors.border }]}
         value={password}
         placeholder="Enter password"
-        placeholderTextColor={colors.text + '80'}
+        placeholderTextColor={colors.placeholderText}
         secureTextEntry={true}
-        onChangeText={(password)=> setPassword(password)}
+        onChangeText={(password) => setPassword(password)}
+        style={[
+          styles.inputField,
+          { 
+            color: colors.text, 
+            backgroundColor: colors.inputBackground,
+          }
+        ]}
       />
-      <TouchableOpacity 
-        style={[styles.button, { backgroundColor: colors.tint }]} 
-        onPress={onSignUpPress}
-      >
-        <Text style={styles.buttonText}>Continue</Text>
+      <TouchableOpacity onPress={onSignUpPress} style={[styles.button, { backgroundColor: colors.accent }]}>
+        <Text style={[styles.buttonText, { color: colors.buttonText }]}>Sign up</Text>
       </TouchableOpacity>
-      <View style={styles.linkContainer}>
-        <Text style={{ color: colors.text }}>Already have an account?</Text>
-        <Link href="sign-in" style={{ color: colors.tint, marginLeft: 5 }}>
-          Sign in
+      <View style={styles.footer}>
+        <Text style={{ color: colors.text }}>Already have an account? </Text>
+        <Link href="/(auth)/sign-in" asChild>
+          <TouchableOpacity>
+            <Text style={{ color: colors.accent }}>Sign in</Text>
+          </TouchableOpacity>
         </Link>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
+    padding: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
   },
-  input: {
+  inputField: {
     height: 50,
     borderWidth: 1,
     borderRadius: 8,
+    paddingHorizontal: 15,
     marginBottom: 15,
-    paddingHorizontal: 10,
+    fontSize: 16,
   },
   button: {
-    height: 50,
+    paddingVertical: 15,
     borderRadius: 8,
-    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
   },
   buttonText: {
-    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  linkContainer: {
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+    marginTop: 10,
+  },
 });

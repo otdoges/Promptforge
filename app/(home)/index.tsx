@@ -1,6 +1,6 @@
 import { SignedIn, SignedOut, useUser } from '@clerk/clerk-expo'
 import { Link } from 'expo-router'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { SignOutButton } from '@/app/components/SignOutButton'
 import { Colors } from '@/constants/Colors'
 import { useColorScheme } from '@/hooks/useColorScheme'
@@ -13,38 +13,23 @@ export default function HomePage() {
   return (
     <View style={styles.container}>
       <SignedIn>
-        <View style={styles.welcomeContainer}>
-          <Text style={[styles.heading, { color: colors.text }]}>
-            Welcome, {user?.emailAddresses[0].emailAddress}
-          </Text>
-          <Text style={[styles.subheading, { color: colors.icon }]}>
-            You're signed in to PromptForge
-          </Text>
-          <View style={styles.buttonContainer}>
-            <Link href="/(tabs)/projects" style={[styles.link, { color: colors.tint }]}>
-              Go to your projects
-            </Link>
-            <SignOutButton />
-          </View>
-        </View>
+        <Text style={{ color: colors.text }}>Hello {user?.emailAddresses[0].emailAddress}</Text>
+        <SignOutButton />
       </SignedIn>
-      
       <SignedOut>
-        <View style={styles.welcomeContainer}>
-          <Text style={[styles.heading, { color: colors.text }]}>
-            Welcome to PromptForge
-          </Text>
-          <Text style={[styles.subheading, { color: colors.icon }]}>
-            Sign in or create an account to get started
-          </Text>
-          <View style={styles.buttonContainer}>
-            <Link href="/sign-in" style={[styles.link, { color: colors.tint }]}>
-              Sign in
-            </Link>
-            <Link href="/sign-up" style={[styles.link, { color: colors.tint }]}>
-              Sign up
-            </Link>
-          </View>
+        <View style={styles.signedOutContainer}>
+          <Text style={[styles.title, { color: colors.text }]}>Welcome!</Text>
+          <Text style={[styles.subtitle, { color: colors.secondary }]}>You&apos;re currently signed out.</Text>
+          <Link href="/(auth)/sign-in" asChild>
+            <TouchableOpacity style={[styles.button, { backgroundColor: colors.accent }]}>
+              <Text style={[styles.buttonText, { color: colors.buttonText }]}>Sign in</Text>
+            </TouchableOpacity>
+          </Link>
+          <Link href="/(auth)/sign-up" asChild>
+            <TouchableOpacity style={[styles.button, { backgroundColor: colors.secondary, marginTop: 10 }]}>
+              <Text style={[styles.buttonText, { color: colors.buttonText }]}>Sign up</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </SignedOut>
     </View>
@@ -54,30 +39,31 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
-  welcomeContainer: {
-    marginTop: 100,
+  signedOutContainer: {
     alignItems: 'center',
   },
-  heading: {
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+    marginBottom: 8,
   },
-  subheading: {
+  subtitle: {
     fontSize: 16,
-    marginBottom: 30,
-    textAlign: 'center',
+    marginBottom: 20,
   },
-  buttonContainer: {
-    marginTop: 20,
-    gap: 15,
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
     alignItems: 'center',
+    width: 200, // Fixed width for buttons
   },
-  link: {
+  buttonText: {
     fontSize: 16,
-    fontWeight: '600',
-  }
+    fontWeight: 'bold',
+  },
 });

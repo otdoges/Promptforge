@@ -17,6 +17,7 @@ import type * as auth from "../auth.js";
 import type * as clerk from "../clerk.js";
 import type * as projects from "../projects.js";
 import type * as useConvex from "../useConvex.js";
+import type * as users from "../users.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   projects: typeof projects;
   useConvex: typeof useConvex;
+  users: typeof users;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
