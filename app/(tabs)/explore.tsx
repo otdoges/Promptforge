@@ -1,110 +1,363 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { StyleSheet, View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import React, { useState } from 'react';
+import { Gradient } from '@/components/ui/Gradient';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { SYSTEM_PROMPTS } from '@/constants/MockData';
+import { ChatInterface } from '@/components/Chat/ChatInterface';
 
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
+export default function ExploreScreen() {
+  const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? 'light'];
+  const [activeTab, setActiveTab] = useState<'models' | 'chat' | 'prompts'>('models');
+  const [selectedPrompt, setSelectedPrompt] = useState<typeof SYSTEM_PROMPTS[0] | null>(null);
+  
+  const handleSelectPrompt = (prompt: typeof SYSTEM_PROMPTS[0]) => {
+    setSelectedPrompt(prompt);
+    setActiveTab('chat');
+  };
+
+  const handleSendMessage = async (message: string): Promise<string> => {
+    // This would normally call an API to get a response from an AI model
+    // For now, we'll simulate a response after a short delay
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(`I received your message: "${message}". Here's how we could approach this in React Native and Expo...`);
+      }, 1000);
+    });
+  };
+
+  const renderModelSection = () => (
+    <ScrollView style={styles.tabContent}>
+      <ThemedText>GitHub offers a variety of AI models that can help you create amazing apps:</ThemedText>
+      
+      <View style={styles.modelCard}>
+        <Gradient variant="primary" style={styles.modelBanner}>
+          <Text style={styles.modelBannerText}>Recommended Models</Text>
+        </Gradient>
+        
+        <Card
+          title="GitHub Copilot"
+          description="Your AI pair programmer that helps you write better code faster"
+          icon={<IconSymbol name="sparkles" size={24} color={colors.tint} />}
+          variant="highlight"
+          onPress={() => {}}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+
+        <Card
+          title="CodeWhisperer"
+          description="AI-powered code suggestions to improve development productivity"
+          icon={<IconSymbol name="wand.and.stars" size={24} color={colors.secondary} />}
+          onPress={() => {}}
+        />
+
+        <Card
+          title="Anthropic Claude"
+          description="Advanced reasoning and code generation capabilities"
+          icon={<IconSymbol name="brain" size={24} color={colors.accent} />}
+          onPress={() => {}}
+        />
+
+        <Card
+          title="GPT-4"
+          description="Powerful language model for text and code generation"
+          icon={<IconSymbol name="text.bubble" size={24} color={colors.tint} />}
+          onPress={() => {}}
+        />
+
+        <Button
+          title="Browse GitHub Marketplace"
+          variant="outline"
+          onPress={() => {}}
+          icon={<IconSymbol name="arrow.right" size={18} color={colors.tint} />}
+          iconPosition="right"
+        />
+      </View>
+    </ScrollView>
+  );
+
+  const renderPromptSection = () => (
+    <ScrollView style={styles.tabContent}>
+      <ThemedText style={styles.sectionDescription}>
+        System prompts help guide AI models to generate better results for specific tasks.
+        Select a prompt to start coding with AI assistance:
+      </ThemedText>
+      
+      {SYSTEM_PROMPTS.map((prompt) => (
+        <TouchableOpacity 
+          key={prompt.id} 
+          style={styles.promptCard}
+          onPress={() => handleSelectPrompt(prompt)}
+          activeOpacity={0.8}
+        >
+          <View style={styles.promptHeader}>
+            <IconSymbol 
+              name="text.badge.checkmark" 
+              size={22} 
+              color={colors.tint} 
+              style={styles.promptIcon} 
+            />
+            <Text style={[styles.promptTitle, { color: colors.text }]}>{prompt.name}</Text>
+          </View>
+          <Text 
+            style={[styles.promptContent, { color: colors.icon }]} 
+            numberOfLines={3}
+          >
+            {prompt.content}
+          </Text>
+          <View style={styles.promptFooter}>
+            <Text style={{ color: colors.icon, fontSize: 12 }}>Tap to use</Text>
+            <IconSymbol name="chevron.right" size={16} color={colors.icon} />
+          </View>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+
+  const renderChatSection = () => (
+    <View style={styles.chatContainer}>
+      {selectedPrompt ? (
+        <>
+          <View style={styles.chatHeader}>
+            <Text style={[styles.chatHeaderTitle, { color: colors.text }]}>
+              {selectedPrompt.name}
+            </Text>
+            <TouchableOpacity 
+              style={styles.changePromptButton}
+              onPress={() => setActiveTab('prompts')}
+            >
+              <Text style={{ color: colors.tint, fontSize: 14 }}>Change</Text>
+            </TouchableOpacity>
+          </View>
+          <ChatInterface 
+            systemPrompt={selectedPrompt.content}
+            onSendMessage={handleSendMessage}
+          />
+        </>
+      ) : (
+        <View style={styles.emptyChatState}>
+          <IconSymbol name="bubble.left.and.bubble.right" size={60} color={colors.icon} />
+          <Text style={[styles.emptyChatText, { color: colors.text }]}>
+            Select a system prompt to start chatting
+          </Text>
+          <Button
+            title="Browse Prompts"
+            onPress={() => setActiveTab('prompts')}
+            variant="primary"
+          />
+        </View>
+      )}
+    </View>
+  );
+
+  return (
+    <ThemedView style={styles.container}>
+      <View style={styles.header}>
+        <Gradient 
+          variant="accent" 
+          style={styles.headerGradient}
+        >
+          <View style={styles.headerContent}>
+            <View>
+              <ThemedText type="title">AI Tools</ThemedText>
+              <Text style={styles.subtitle}>Powered by GitHub Models</Text>
+            </View>
+            <IconSymbol
+              size={60}
+              color="#FFFFFF"
+              name="square.stack.3d.up"
+            />
+          </View>
+        </Gradient>
+      </View>
+
+      <View style={styles.tabsContainer}>
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'models' && [styles.activeTab, { borderBottomColor: colors.tint }]
+          ]}
+          onPress={() => setActiveTab('models')}
+        >
+          <Text 
+            style={[
+              styles.tabText, 
+              { color: activeTab === 'models' ? colors.tint : colors.icon }
+            ]}
+          >
+            Models
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'prompts' && [styles.activeTab, { borderBottomColor: colors.tint }]
+          ]}
+          onPress={() => setActiveTab('prompts')}
+        >
+          <Text 
+            style={[
+              styles.tabText, 
+              { color: activeTab === 'prompts' ? colors.tint : colors.icon }
+            ]}
+          >
+            Prompts
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[
+            styles.tab, 
+            activeTab === 'chat' && [styles.activeTab, { borderBottomColor: colors.tint }]
+          ]}
+          onPress={() => setActiveTab('chat')}
+        >
+          <Text 
+            style={[
+              styles.tabText, 
+              { color: activeTab === 'chat' ? colors.tint : colors.icon }
+            ]}
+          >
+            Chat
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {activeTab === 'models' && renderModelSection()}
+      {activeTab === 'prompts' && renderPromptSection()}
+      {activeTab === 'chat' && renderChatSection()}
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
   },
-  titleContainer: {
+  header: {
+    width: '100%',
+    height: 170,
+    overflow: 'hidden',
+  },
+  headerGradient: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 0,
+  },
+  headerContent: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 24,
+    paddingTop: 60,
+  },
+  subtitle: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 16,
+    marginTop: 4,
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  activeTab: {
+    borderBottomWidth: 2,
+  },
+  tabText: {
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  tabContent: {
+    flex: 1,
+    padding: 16,
+  },
+  sectionDescription: {
+    marginBottom: 16,
+    lineHeight: 22,
+  },
+  modelBanner: {
+    padding: 12,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  modelBannerText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  modelCard: {
+    marginTop: 16,
+    gap: 12,
+  },
+  promptCard: {
+    backgroundColor: 'rgba(0,0,0,0.03)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  promptHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  promptIcon: {
+    marginRight: 8,
+  },
+  promptTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  promptContent: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 12,
+  },
+  promptFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  chatContainer: {
+    flex: 1,
+  },
+  emptyChatState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    gap: 16,
+  },
+  emptyChatText: {
+    textAlign: 'center',
+    marginBottom: 16,
+    fontSize: 16,
+  },
+  chatHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  chatHeaderTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  changePromptButton: {
+    padding: 8,
   },
 });
